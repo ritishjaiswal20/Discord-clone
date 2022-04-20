@@ -1,7 +1,22 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
 import {MenuIcon} from '@heroicons/react/outline'
+import {auth, provider} from  '../firebase'
+import {useAuthState} from "react-firebase-hooks/auth"
+import { useHistory } from 'react-router-dom';
 function Header() {
+   const [user]=useAuthState(auth);
+   const history=useHistory();
+  
+   const signIn = (e) => {
+    e.preventDefault();
+
+    auth
+      .signInWithPopup(provider)
+      .then(() => history.push("/channels"))
+      .catch((error) => alert(error.message));
+  };
+
   return (
     <header className="flex items-center justify-between py-4 px-6  bg-discord_blue">
         <a href="/">
@@ -18,7 +33,7 @@ function Header() {
             <a  className="link">Security</a>
         </div>
         <div className="flex space-x-4">
-            <button className="bg-white p-3 rounded-full text-xs md:text-lg-px-4  focus:outline-none text-black hover:shadow-2xl hover:text-discord_blurple transition duration-200 ease-in-out whitespace-nowrap font-medium">Login</button>
+            <button className="bg-white p-3 rounded-full text-xs md:text-lg-px-4  focus:outline-none text-black hover:shadow-2xl hover:text-discord_blurple transition duration-200 ease-in-out whitespace-nowrap font-medium" onClick={!user ? signIn : () => history.push("/channels")}>{!user ? "Login" :"Open discord"}</button>
            <MenuIcon className="h-9 text-white cursor-pointer lg:hidden"/>
         </div> 
 
